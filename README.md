@@ -66,3 +66,5 @@ Abra http://localhost:8081.
 - R: reiniciar
 
 Os melhores resultados são mantidos em memória enquanto a API estiver rodando.
+
+O jogo também funciona sem a API. Para usar o placar online, informe no campo **Endereço do backend** um endereço acessível pelo navegador (por exemplo, `http://localhost:8080`) e clique em **Conectar**. O endereço fica salvo no navegador.
