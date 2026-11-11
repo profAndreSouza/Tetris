@@ -33,7 +33,7 @@ Abra http://localhost:8081. Para encerrar, use `Ctrl+C` e rode `docker compose d
 
 ### Publicar no Docker Hub pelo GitHub Actions
 
-Configure os secrets `DOCKERHUB_USERNAME` e `DOCKERHUB_TOKEN` nas configurações do repositório GitHub. O workflow `.github/workflows/publish-dockerhub.yml` publica as imagens `SEU_USUARIO/tetris-frontend` e `SEU_USUARIO/tetris-api` ao enviar commits para `main`. Também é possível executá-lo manualmente pela aba **Actions**.
+Configure os secrets `DOCKERHUB_USERNAME` e `DOCKERHUB_TOKEN` nas configurações do repositório GitHub. O workflow `.github/workflows/publish-dockerhub.yml` publica as imagens `SEU_USUARIO/tetris-frontend` e `SEU_USUARIO/tetris-api` ao enviar commits para `main`. Cada execução publica as tags `latest`, `vN` (número sequencial da execução) e o SHA do commit. Também é possível executá-lo manualmente pela aba **Actions**.
 
 Também é possível construir e iniciar cada imagem separadamente:
 
