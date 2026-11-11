@@ -26,7 +26,6 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/tetris-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/tetris-frontend:v${{ github.run_number }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/tetris-frontend:${{ github.sha }}
 
       - name: Publicar API
         uses: docker/build-push-action@v6
@@ -36,4 +35,3 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/tetris-api:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/tetris-api:v${{ github.run_number }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/tetris-api:${{ github.sha }}
