@@ -33,11 +33,18 @@ Abra http://localhost:8081. Para encerrar, use `Ctrl+C` e rode `docker compose d
 
 ### Publicar no Docker Hub pelo GitHub Actions
 
-Configure os secrets `DOCKERHUB_USERNAME` e `DOCKERHUB_TOKEN` nas configurações do repositório GitHub. O workflow `.github/workflows/publish-dockerhub.yml` publica as imagens `SEU_USUARIO/tetris-frontend` e `SEU_USUARIO/tetris-api` ao enviar commits para `main`. Cada execução publica as tags `latest`, `vN` (número sequencial da execução) e o SHA do commit. Também é possível executá-lo manualmente pela aba **Actions**.
+Configure os secrets `DOCKERHUB_USERNAME` e `DOCKERHUB_TOKEN` nas configurações do repositório GitHub. O workflow `.github/workflows/publish-dockerhub.yml` publica somente quando uma tag Git começando com `v` é enviada. Para publicar a versão `v1.0.0`, por exemplo:
+
+```powershell
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+As imagens `SEU_USUARIO/tetris-frontend` e `SEU_USUARIO/tetris-api` recebem as tags `v1.0.0`, `latest` e o SHA do commit. O deploy automático na EC2 inicia após a publicação concluir com sucesso.
 
 ### Deploy automático na EC2
 
-O deploy fica em um workflow separado: `.github/workflows/deploy-ec2.yml`. Ele inicia automaticamente após o workflow de publicação concluir com sucesso na branch `main`, e também pode ser iniciado manualmente pela aba **Actions**. Ele baixa as imagens `latest`, remove os containers anteriores e inicia os novos com `docker run`. O frontend fica na porta 80 e a API na 8080.
+O deploy fica em um workflow separado: `.github/workflows/deploy-ec2.yml`. Ele inicia automaticamente após o workflow de publicação da tag concluir com sucesso, e também pode ser iniciado manualmente pela aba **Actions**. Ele baixa as imagens `latest`, remove os containers anteriores e inicia os novos com `docker run`. O frontend fica na porta 80 e a API na 8080.
 
 #### 1. Prepare a instância EC2
 
@@ -87,7 +94,7 @@ Para copiar a chave privada no PowerShell e colá-la no secret, use:
 cat "$env:USERPROFILE\.ssh\tetris-ec2"
 ```
 
-Não coloque tokens nem a chave privada em arquivos do repositório. Depois de configurar os secrets, publique para `main`; o workflow de deploy será acionado após a publicação. Acesse `http://IP_PUBLICO_DA_EC2` e configure o endereço do backend como `http://IP_PUBLICO_DA_EC2:8080` no placar.
+Não coloque tokens nem a chave privada em arquivos do repositório. Depois de configurar os secrets, envie uma tag `v*` (por exemplo, `v1.0.0`); os workflows publicarão as imagens e farão o deploy na EC2. Acesse `http://IP_PUBLICO_DA_EC2` e configure o endereço do backend como `http://IP_PUBLICO_DA_EC2:8080` no placar.
 
 Também é possível construir e iniciar cada imagem separadamente:
 

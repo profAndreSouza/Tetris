@@ -2,8 +2,8 @@ name: Publicar imagens no Docker Hub
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    tags:
+      - 'v*'
 
 jobs:
   publish:
@@ -25,7 +25,8 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/tetris-frontend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/tetris-frontend:v${{ github.run_number }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/tetris-frontend:${{ github.ref_name }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/tetris-frontend:${{ github.sha }}
 
       - name: Publicar API
         uses: docker/build-push-action@v6
@@ -34,4 +35,5 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/tetris-api:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/tetris-api:v${{ github.run_number }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/tetris-api:${{ github.ref_name }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/tetris-api:${{ github.sha }}
