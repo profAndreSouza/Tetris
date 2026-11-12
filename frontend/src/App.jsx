@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Moon, Pause, Play, RotateCcw, Sun, Volume2, VolumeX } from 'lucide-react'
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Palette, Pause, Play, RotateCcw, Volume2, VolumeX } from 'lucide-react'
 
 const W = 10, H = 20
 const SHAPES = [
@@ -26,7 +26,10 @@ function App() {
   const [paused, setPaused] = useState(false)
   const [over, setOver] = useState(false)
   const [muted, setMuted] = useState(false)
-  const [theme, setTheme] = useState(() => localStorage.getItem('tetris-theme') || 'dark')
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('tetris-theme')
+    return savedTheme === 'dark' ? 'violet' : savedTheme || 'violet'
+  })
   const [best, setBest] = useState(() => Number(localStorage.getItem('tetris-best') || 0))
   const [scores, setScores] = useState([])
   const [player, setPlayer] = useState('')
@@ -110,7 +113,7 @@ function App() {
   const Key = ({ children }) => <kbd>{children}</kbd>
 
   return <main className="app-shell">
-    <header className="topbar"><a className="brand" href="#top" aria-label="Tetris início"><span className="brand-mark"><i/><i/><i/><i/></span><span>tetris<span className="brand-dot">.</span></span></a><div className="top-note"><span className="live-dot"/> jogo clássico, momento presente</div><div className="top-actions"><button className="icon-button" onClick={() => setMuted(m => !m)} aria-label={muted ? 'Ativar som' : 'Desativar som'}>{muted ? <VolumeX size={17}/> : <Volume2 size={17}/>}</button><button className="icon-button" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'} title={theme === 'dark' ? 'Tema claro' : 'Tema escuro'}>{theme === 'dark' ? <Sun size={17}/> : <Moon size={17}/>}</button></div></header>
+    <header className="topbar"><a className="brand" href="#top" aria-label="Tetris início"><span className="brand-mark"><i/><i/><i/><i/></span><span>tetris<span className="brand-dot">.</span></span></a><div className="top-note"><span className="live-dot"/> jogo clássico, momento presente</div><div className="top-actions"><label className="theme-picker" title="Escolher tema"><Palette size={15}/><select aria-label="Escolher tema" value={theme} onChange={e => setTheme(e.target.value)}><option value="violet">Violeta</option><option value="light">Claro</option><option value="ocean">Oceano</option><option value="forest">Floresta</option></select></label><button className="icon-button" onClick={() => setMuted(m => !m)} aria-label={muted ? 'Ativar som' : 'Desativar som'}>{muted ? <VolumeX size={17}/> : <Volume2 size={17}/>}</button></div></header>
     <section className="hero" id="top"><div className="eyebrow"><span>01</span><span className="eyebrow-line"/> seu momento de pausa</div><h1>Um bloco<br/>de cada <span>vez.</span></h1><p className="hero-copy">Respire fundo. Encontre seu espaço.<br/>O resto se encaixa.</p></section>
     <section className="game-layout" aria-label="Jogo Tetris">
       <div className="board-wrap"><div className="board-frame"><div className="board-topline"><span>ÁREA DE JOGO</span><span className="board-level">LVL <b>{String(level).padStart(2, '0')}</b></span></div><div className="board" role="grid" aria-label={`Tabuleiro, pontuação ${score}`}>
