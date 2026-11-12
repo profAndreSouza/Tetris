@@ -40,7 +40,7 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-As imagens `SEU_USUARIO/tetris-frontend` e `SEU_USUARIO/tetris-api` recebem as tags `v1.0.0`, `latest` e o SHA do commit. O deploy automático na EC2 inicia após a publicação concluir com sucesso.
+As imagens `SEU_USUARIO/tetris-frontend` e `SEU_USUARIO/tetris-api` recebem as tags `v1.0.0` e o `latest`. O deploy automático na EC2 inicia após a publicação concluir com sucesso.
 
 ### Deploy automático na EC2
 
