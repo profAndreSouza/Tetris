@@ -37,11 +37,11 @@ Configure os secrets `DOCKERHUB_USERNAME` e `DOCKERHUB_TOKEN` nas configuraçõe
 
 ### Deploy automático na EC2
 
-O deploy fica em um workflow separado: `.github/workflows/deploy-ec2.yml`. Ele inicia automaticamente após o workflow de publicação concluir com sucesso na branch `main`, e também pode ser iniciado manualmente pela aba **Actions**. Ele copia `docker-compose.prod.yml` para `/opt/tetris` na EC2, baixa as imagens `latest` e reinicia os containers. O frontend fica na porta 80 e a API na 8080.
+O deploy fica em um workflow separado: `.github/workflows/deploy-ec2.yml`. Ele inicia automaticamente após o workflow de publicação concluir com sucesso na branch `main`, e também pode ser iniciado manualmente pela aba **Actions**. Ele baixa as imagens `latest`, remove os containers anteriores e inicia os novos com `docker run`. O frontend fica na porta 80 e a API na 8080.
 
 #### 1. Prepare a instância EC2
 
-Use uma instância Ubuntu, instale Docker Engine e o plugin Docker Compose, e confirme que o usuário configurado em `EC2_USER` consegue executar `sudo docker`. No Security Group, permita entrada TCP na porta 80 para acessar o jogo e na porta 8080 para permitir que o navegador acesse o placar. Restrinja o SSH (porta 22) ao seu IP sempre que possível.
+Use uma instância Ubuntu com Docker instalado e confirme que o usuário configurado em `EC2_USER` consegue executar `sudo docker`. O deploy usa `docker pull` e `docker run`; não precisa do Docker Compose na EC2. No Security Group, permita entrada TCP na porta 80 para acessar o jogo e na porta 8080 para permitir que o navegador acesse o placar. Restrinja o SSH (porta 22) ao seu IP sempre que possível.
 
 #### 2. Gere e instale a chave SSH de deploy
 
@@ -51,7 +51,19 @@ No PowerShell do seu computador, gere uma chave dedicada:
 ssh-keygen -t ed25519 -C "github-actions-tetris" -f "$env:USERPROFILE\.ssh\tetris-ec2"
 ```
 
-Adicione o conteúdo do arquivo `tetris-ec2.pub` ao `~/.ssh/authorized_keys` do usuário da EC2 (`ubuntu` em Ubuntu; o nome depende da AMI). Mantenha o arquivo privado `tetris-ec2` apenas no seu computador e no secret do GitHub.
+Adicione a chave pública ao `authorized_keys` do usuário da EC2:
+
+```bash
+cat "$env:USERPROFILE\.ssh\tetris-ec2.pub" >> ~/.ssh/authorized_keys
+```
+
+Use o arquivo **público** `tetris-ec2.pub` nesse comando; o arquivo privado `tetris-ec2` vai somente no secret `EC2_SSH_KEY`. Use o usuário correto da AMI (`ubuntu` no Ubuntu; `ec2-user` em Amazon Linux). Teste a conexão a partir do seu computador:
+
+```powershell
+ssh -i "$env:USERPROFILE\.ssh\tetris-ec2" ubuntu@IP_PUBLICO_DA_EC2
+```
+
+Troque `ubuntu` e `IP_PUBLICO_DA_EC2` pelos dados da sua instância. Mantenha a chave privada `tetris-ec2` apenas no computador e no secret do GitHub.
 
 #### 3. Crie um token do Docker Hub
 
