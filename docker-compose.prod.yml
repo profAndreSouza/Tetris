@@ -1,0 +1,14 @@
+services:
+  api:
+    image: ${DOCKERHUB_USERNAME:?Configure DOCKERHUB_USERNAME}/tetris-api:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME:?Configure DOCKERHUB_USERNAME}/tetris-frontend:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
