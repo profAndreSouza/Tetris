@@ -52,7 +52,7 @@ Use uma instância Ubuntu com Docker instalado e confirme que o usuário configu
 
 #### 2. Gere e instale a chave SSH de deploy
 
-No PowerShell do seu computador, gere uma chave dedicada:
+No CLI da EC2, gere uma chave dedicada:
 
 ```powershell
 ssh-keygen -t ed25519 -C "github-actions-tetris" -f "$env:USERPROFILE\.ssh\tetris-ec2"
@@ -64,13 +64,13 @@ Adicione a chave pública ao `authorized_keys` do usuário da EC2:
 cat "$env:USERPROFILE\.ssh\tetris-ec2.pub" >> ~/.ssh/authorized_keys
 ```
 
-Use o arquivo **público** `tetris-ec2.pub` nesse comando; o arquivo privado `tetris-ec2` vai somente no secret `EC2_SSH_KEY`. Use o usuário correto da AMI (`ubuntu` no Ubuntu; `ec2-user` em Amazon Linux). Teste a conexão a partir do seu computador:
+Use o arquivo **público** `tetris-ec2.pub` nesse comando; o arquivo privado `tetris-ec2` vai somente no secret `EC2_SSH_KEY`. 
 
+Para obter o conteúdo da chave privada para salvar no secret do Github
 ```powershell
-ssh -i "$env:USERPROFILE\.ssh\tetris-ec2" ubuntu@IP_PUBLICO_DA_EC2
+cat "$env:USERPROFILE\.ssh\tetris-ec2"
 ```
-
-Troque `ubuntu` e `IP_PUBLICO_DA_EC2` pelos dados da sua instância. Mantenha a chave privada `tetris-ec2` apenas no computador e no secret do GitHub.
+Mantenha a chave privada `tetris-ec2` apenas no computador e no secret do GitHub.
 
 #### 3. Crie um token do Docker Hub
 
